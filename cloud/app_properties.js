@@ -23,13 +23,11 @@ exports.error_admin = function() {
 }
 
 exports.order_url = function() {
-	//return "http://coderer.net/hungrybee/index.php";
 	return "http://hungrybee.net/hungrybee/index.php";
 }
 
 exports.shorten_url = function() {
-	//return "http://hungrybeedev.parseapp.com";
-	return "https://hungrybeedev.herokuapp.com/public";
+	return "https://hungrybeedev.herokuapp.com/public"; //Heroku
 }
 
 exports.order_info = function() {
