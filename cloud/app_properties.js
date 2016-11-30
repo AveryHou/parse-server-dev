@@ -53,8 +53,8 @@ exports.kotsms_pwd = function() {
 	return "hungrybee999";
 }
 exports.kotsms_url = function() {
-	return "http://202.39.48.216/kotsmsapi-1.php";
-	//return "https://api.kotsms.com.tw/kotsmsapi-1.php";
+	//return "http://202.39.48.216/kotsmsapi-1.php";
+	return "https://api.kotsms.com.tw/kotsmsapi-1.php";
 }
 exports.kotsms_mailer = function() {
 	return "mail2sms@kotsms.com.tw";
