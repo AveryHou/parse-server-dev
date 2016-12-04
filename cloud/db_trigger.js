@@ -283,7 +283,6 @@ Parse.Cloud.afterSave("HBOrder", function(request) {
 		var storeObj = storeInCart.get("store");
 	    var cartObj = storeInCart.get("cart");
 	    console.log("store:" + storeObj.get("storeName") + ", cart status:" + cartObj.get("status"));
-	    //if(cartObj.get("status") == "onbid" || cartObj.get("status") == "ongoing") {
 	    if(cartObj.get("status") == "ongoing") {
 	    	var promise = Parse.Promise.as();
 		    promise = promise.then(function() {

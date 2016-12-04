@@ -68,8 +68,10 @@ exports.kotsms_mailer = function() {
 
 //var mailgun_domain = "hungrybee.net";
 //var mailgun_key = "key-f43e26f64176e2545eb358dd39066bf9";
-var mailgun_domain = "mg.wintopinfo.com";
-var mailgun_key = "key-ada9303e5d3b184d2e601674d53b1e3b";
+//var mailgun_domain = "mg.wintopinfo.com";
+//var mailgun_key = "key-ada9303e5d3b184d2e601674d53b1e3b";
+var mailgun_domain = "app8e67751ebe8048409017d475546b6771.mailgun.org";
+var mailgun_key = "key-76f6c06667565c701325fc2098fd4609";
 
 exports.mailgun_domain = function() {
 	return mailgun_domain;
