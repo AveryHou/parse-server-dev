@@ -94,7 +94,7 @@ Parse.Cloud.define("getAuthCode", function(req, res) {
 			if (userFound.get("bypass")) { // 透過客服後台進行設定
 				userFound.save(null,{
 						success: function(userSaved) {
-							logger.send_notify(prop.admin_mail(), "", req.params.phoneNo + " 透過後台客服給認證碼", "");
+							logger.send_notify(prop.admin_mail(), "", req.params.phoneNo + " 透過後台客服給認證碼", userFound.getUsername());
 							res.success(100);
 						},
 						error: function(err) {
