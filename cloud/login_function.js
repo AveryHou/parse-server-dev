@@ -119,6 +119,7 @@ Parse.Cloud.define("getAuthCode", function(req, res) {
 									console.log("switch to twillio");
 									sendCodeSms(req.params.phoneNo, num);
 									logger.send_notify(prop.admin_mail(), "", req.params.phoneNo + " 使用 Twillio 取簡訊", num);
+									res.success(100);
 								} else {
 									if (prop.sms_provider() == "twillio") {
 										sendCodeSms(req.params.phoneNo, num);
@@ -135,7 +136,8 @@ Parse.Cloud.define("getAuthCode", function(req, res) {
 										 {
 											success: function(result){
 												//console.log("sendCodeByKotsms result" + result);
-												response.success(result);
+												//response.success(result);
+												res.success(100);
 										 	},
 										 	error: function(error) {
 										 		logger.send_error(logger.subject("getAuthCode", "sendCodeByKotsms error"), error);
@@ -145,9 +147,9 @@ Parse.Cloud.define("getAuthCode", function(req, res) {
 										
 									}
 								}
-								
+							} else {
+								res.success(100);	
 							}
-							res.success(100);
 						},
 						error: function(err) {
 							logger.send_error(logger.subject("getAuthCode", "save authCodeSent") , err);
@@ -180,15 +182,12 @@ Parse.Cloud.define("getAuthCode", function(req, res) {
 			if (req.params.app == "driver") {
 				user.set("mentorBee", false);
 			}
-			user.signUp(null, {   //see https://www.parse.com/docs/js/guide#users-signing-up
-				success: function(user) {
+			user.signUp(null, {}).then(
+				function(user){
 					if (!isTestAccount) {
 						if (prop.sms_provider() == "twillio") {
 							sendCodeSms(req.params.phoneNo, num);
 						} else if (prop.sms_provider() == "kotsms") {
-							//sendCodeByKotsms(req.params.phoneNo, num);
-							//kotSendSmsMail(req.params.phoneNo, num); //透過email發簡訊
-							
 							
 							Parse.Cloud.run("sendCodeKotsms", 
 							{
@@ -207,14 +206,12 @@ Parse.Cloud.define("getAuthCode", function(req, res) {
 							});
 							
 						}
-					}
-					res.success(100);
+					}	
 				},
-				error: function(user, error) {
+				function(error){
 					logger.send_error(logger.subject("getAuthCode", "signUp") ,error);
 					res.error(error);
-				}	
-			});
+				});
 		}
 	}, function (err) {
 		logger.send_error(err);
