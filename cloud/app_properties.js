@@ -40,7 +40,8 @@ exports.mock_mode = function() {
 
 // kotsms or twillio
 exports.sms_provider = function() {
-	return "kotsms";
+	//return "kotsms";
+	return "twillio";
 }
 
 ////////////////////////////////////////////////////
