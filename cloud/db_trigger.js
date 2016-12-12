@@ -283,7 +283,7 @@ Parse.Cloud.afterSave("HBOrder", function(request) {
 		var storeObj = storeInCart.get("store");
 	    var cartObj = storeInCart.get("cart");
 	    console.log("store:" + storeObj.get("storeName") + ", cart status:" + cartObj.get("status"));
-	    if(cartObj.get("status") == "ongoing") {
+	    if(cartObj.get("status") == "ongoing") { //接單後才通知店家
 	    	var promise = Parse.Promise.as();
 		    promise = promise.then(function() {
 		        var queryUser = new Parse.Query(Parse.User);
@@ -311,7 +311,7 @@ Parse.Cloud.afterSave("HBOrder", function(request) {
 					 	success: function() {
 					    	// Push was successful
 					    	console.log("Push was successful send to " + user.id + ", members Of " + storeObj.get("storeName"));
-					    	response.success(true);
+					    	//response.success(true);
 					    },
 					  	error: function(error) {
 					    	console.error(JSON.stringify(error));
@@ -364,7 +364,7 @@ Parse.Cloud.afterSave("HBRushHour", function(request) {
 						console.log(request.object.get("storeId").id + " store saved:");
 					},
 					error: function(err) {
-						mail.send_error(mail.subject("afterSave HBRushHour", "set store onhold failed."), err);
+						mail.send_error(mail.subject("afterSave HBRushHour", "set store onhold failed."), err); 
 					}		
 				});
 		 	},

@@ -98,7 +98,7 @@ Parse.Cloud.define("getAuthCode", function(req, res) {
 							res.success(100);
 						},
 						error: function(err) {
-							logger.send_error(logger.subject("getAuthCode", "save authCodeSent") , err);
+							logger.send_error(logger.subject("getAuthCode", "bypass authcode") , err);
 							res.error("save user error:" + err);
 						}	
 					});
@@ -115,7 +115,6 @@ Parse.Cloud.define("getAuthCode", function(req, res) {
 					userFound.save(null,{
 						success: function(userSaved) {
 							if (!isTestAccount) { //test account does not need sms
-								
 								if (authCodeSent == 2) { //改使用twillio
 									console.log("switch to twillio");
 									sendCodeSms(req.params.phoneNo, num);
@@ -124,16 +123,13 @@ Parse.Cloud.define("getAuthCode", function(req, res) {
 								} else {
 									if (prop.sms_provider() == "twillio") {
 										sendCodeSms(req.params.phoneNo, num);
+										res.success(100);
 									} else if (prop.sms_provider() == "kotsms") {
-										//sendCodeByKotsms(req.params.phoneNo, num);
-										//kotSendSmsMail(req.params.phoneNo, num); //透過email發簡訊
-										
-										
 										Parse.Cloud.run("sendCodeKotsms", 
-										{
-										 	phoneNumber: req.params.phoneNo, 
-										 	code: num
-										 }, 
+											{
+											 	phoneNumber: req.params.phoneNo, 
+											 	code: num
+											 }, 
 										 {
 											success: function(result){
 												//console.log("sendCodeByKotsms result" + result);
@@ -145,7 +141,6 @@ Parse.Cloud.define("getAuthCode", function(req, res) {
 												response.error(error);
 											}
 										});
-										
 									}
 								}
 							} else {
@@ -183,36 +178,37 @@ Parse.Cloud.define("getAuthCode", function(req, res) {
 			if (req.params.app == "driver") {
 				user.set("mentorBee", false);
 			}
-			user.signUp(null, {}).then(
-				function(user){
+			user.signUp(null, {   //see https://www.parse.com/docs/js/guide#users-signing-up
+				success: function(user) {
 					if (!isTestAccount) {
 						if (prop.sms_provider() == "twillio") {
 							sendCodeSms(req.params.phoneNo, num);
+							res.success(100);
 						} else if (prop.sms_provider() == "kotsms") {
-							
 							Parse.Cloud.run("sendCodeKotsms", 
-							{
-							 	phoneNumber: req.params.phoneNo, 
-							 	code: num
-							 }, 
-							 {
-								success: function(result){
-									console.log("sendCodeByKotsms result" + result);
-									response.success(result);
-							 	},
-							 	error: function(error) {
-							 		logger.send_error(logger.subject("getAuthCode", "sendCodeByKotsms error"), error);
-									response.error(error);
-								}
-							});
+								{
+							 		phoneNumber: req.params.phoneNo, 
+							 		code: num
+							 	},{
+							 		success: function(user) {
+										res.success(100);	
+									},
+									error: function(user, error) {
+										logger.send_error(logger.subject("getAuthCode", "call sendCodeKotsms") ,error);
+										res.error(error);
+									}
+							 	});
 							
 						}
-					}	
+					} else {
+						res.success(100);	
+					}
 				},
-				function(error){
+				error: function(user, error) {
 					logger.send_error(logger.subject("getAuthCode", "signUp") ,error);
 					res.error(error);
-				});
+				}	
+			});
 		}
 	}, function (err) {
 		logger.send_error(err);
